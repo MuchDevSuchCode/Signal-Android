@@ -1,55 +1,87 @@
-# Signal Android
+# Signal Android — Privacy-Focused Fork
 
-Signal is a simple, powerful, and secure messenger that uses your phone's data connection (WiFi/4G/5G) to communicate securely.
+This is a modified build of [Signal Android](https://github.com/signalapp/Signal-Android)
+(based on **v8.19.2**) with a few extra privacy features centered on making deleted
+content actually disappear. Everything else behaves exactly like upstream Signal.
 
-Millions of people use Signal every day for free and instantaneous communication anywhere in the world. Send and receive high-fidelity messages, participate in HD voice/video calls, and explore a growing set of new features that help you stay connected. 
+> **Not affiliated with or endorsed by Signal Messenger, LLC.** This is an unofficial
+> personal fork. Do not report issues with this build to the Signal project.
 
-Signal’s advanced privacy-preserving technology is always enabled, so you can focus on sharing the moments that matter with the people who matter to you.
+## What's different from stock Signal
 
-Currently available on the [Play Store](https://play.google.com/store/apps/details?id=org.thoughtcrime.securesms) and [signal.org](https://signal.org/android/apk/).
+All three features are controlled by new toggles under **Settings → Privacy → Messaging**
+and are **enabled by default**.
 
-<a href='https://play.google.com/store/apps/details?id=org.thoughtcrime.securesms&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' height='80px'/></a>
+### 1. Hide deleted messages
+When a message is deleted for everyone, stock Signal leaves a "This message was deleted"
+placeholder in the chat. This build removes the message entirely instead, so there's no
+trace it ever existed. This applies to:
 
-Also available on [iOS](https://github.com/signalapp/signal-ios) and [Desktop](https://github.com/signalapp/signal-desktop).
+- messages the other person deletes for everyone,
+- messages you delete for everyone,
+- group admin deletes,
+- and deletes synced from your linked devices.
 
-## Contributing Bug Reports
-We use GitHub for bug tracking. Please search the existing issues for your bug and create a new one if the issue is not yet tracked!
+Stories keep Signal's normal behavior. Turn the setting off to restore the standard
+"This message was deleted" placeholder.
 
-https://github.com/signalapp/Signal-Android/issues
+### 2. Hide timer change events
+Stock Signal drops a "X set the disappearing message timer to …" event into the chat
+whenever the timer changes. This build suppresses those events — for incoming 1:1
+changes, your own changes, linked-device syncs, and group timer changes. The disappearing
+message timer itself still works exactly as before; only the chat event is hidden.
 
-## Joining the Beta
-Want to live life on the bleeding edge and help out with testing?
+### 3. Delete a conversation for both parties
+A new **"Delete for both"** option in a 1:1 chat's ⋮ menu deletes the *entire*
+conversation from **both** your device and the other person's, then returns you to the
+chat list. It also clears the conversation from both parties' linked (desktop) devices.
 
-You can subscribe to Signal Android Beta releases here:
-https://play.google.com/apps/testing/org.thoughtcrime.securesms
+Because stock Signal only lets you remote-delete your *own* messages, this uses a custom
+message that both copies of this app understand. Some things to know:
 
-If you're interested in a life of peace and tranquility, stick with the standard releases.
+- **Both people must be running this fork.** If the other person is on the official
+  Signal app, the request is silently ignored and nothing happens on their side.
+- **1:1 chats only.** Group chats are intentionally not supported.
+- **It's cooperative, not enforceable.** It works because the receiving app chooses to
+  honor the request. It cannot delete data from a modified client, an existing backup, or
+  a screenshot.
+- A per-conversation watermark prevents messages that were already in transit at the
+  moment of deletion from reappearing afterward.
 
-## Contributing Translations
-Interested in helping translate Signal? Contribute here:
+Turning the **"Delete chats for both"** setting off hides the menu option *and* makes your
+app ignore incoming delete-for-both requests from others.
 
-https://community.signalusers.org/c/translation-feedback/
+### Bonus: "Delete all" also retracts remotely
+The existing **"Delete all"** chat option now additionally sends a "delete for everyone"
+for your recent outgoing messages (those still inside Signal's remote-delete window)
+before wiping the thread locally — so your side of the conversation is cleaned up on the
+other person's device too, where possible.
 
-## Contributing Code
+## Installing
 
-If you're new to the Signal codebase, we recommend going through our issues and picking out a simple bug to fix in order to get yourself familiar. Also please have a look at the [CONTRIBUTING.md](https://github.com/signalapp/Signal-Android/blob/main/CONTRIBUTING.md), that might answer some of your questions.
+A prebuilt debug APK for **arm64-v8a** devices (most modern phones) is in the
+[`release/`](release) folder.
 
-For larger changes and feature ideas, we ask that you propose it on the [unofficial Community Forum](https://community.signalusers.org) for a high-level discussion with the wider community before implementation.
+1. Download `release/Signal-Android-8.19.2.1-arm64-v8a.apk`.
+2. On your phone, allow installing from unknown sources for your browser/file manager.
+3. Open the APK to install.
 
-## Contributing Ideas
-Have something you want to say about Signal projects or want to be part of the conversation? Get involved in the [community forum](https://community.signalusers.org).
+Note: this is a debug-signed build. It will not update or install *over* the official
+Play Store Signal (the signatures differ) — you must uninstall the official app first,
+which deletes its local data on that device. For the delete-for-both feature to work,
+install this same APK on **both** phones.
 
-Help
-====
-## Support
-For troubleshooting and questions, please visit our support center!
+## Building from source
 
-https://support.signal.org/
+Build it the same way as upstream Signal:
 
-## Documentation
-Looking for documentation? Check out the wiki!
+```
+./gradlew :Signal-Android:assemblePlayProdDebug
+```
 
-https://github.com/signalapp/Signal-Android/wiki
+The APK is written to `app/build/outputs/apk/playProd/debug/`. See upstream's
+[BUILDING.md](https://github.com/signalapp/Signal-Android/blob/main/BUILDING.md) for
+toolchain and reproducible-build details.
 
 # Legal things
 ## Cryptography Notice
