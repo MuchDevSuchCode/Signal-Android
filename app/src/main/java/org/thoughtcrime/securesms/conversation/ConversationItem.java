@@ -253,6 +253,7 @@ public final class ConversationItem extends RelativeLayout implements BindableCo
   private                Stub<ComposeView>                       pollView;
   private @Nullable      EventListener                           eventListener;
   private @Nullable      GestureDetector                         gestureDetector;
+  private                boolean                                 mediaHidden;
 
   private int     defaultBubbleColor;
   private int     defaultBubbleColorForWallpaper;
@@ -447,6 +448,7 @@ public final class ConversationItem extends RelativeLayout implements BindableCo
     setHasBeenPinned(conversationMessage);
     setPoll(messageRecord, messageRecord.getToRecipient().getChatColors().asSingleColor());
     adjustMarginsForSenderVisibility();
+    applyMediaHidden();
 
     if (audioViewStub.resolved()) {
       audioViewStub.get().setOnLongClickListener(passthroughClickListener);
@@ -455,6 +457,32 @@ public final class ConversationItem extends RelativeLayout implements BindableCo
     isBound = true;
     this.author.observeForever(this);
     this.conversationRecipient.observeForever(this);
+  }
+
+  @Override
+  public void setMediaHidden(boolean mediaHidden) {
+    this.mediaHidden = mediaHidden;
+  }
+
+  /**
+   * NON-UPSTREAM. When media is hidden, collapse the entire message row to zero height so a media
+   * message (photo/video/gif/album/sticker/big-image link preview) disappears as if it were not
+   * there. Non-media messages are unaffected. Rebinding on reveal restores the row.
+   */
+  private void applyMediaHidden() {
+    boolean collapse = mediaHidden && hasHideableMedia();
+
+    ViewGroup.LayoutParams params = getLayoutParams();
+    if (params != null) {
+      params.height = collapse ? 0 : ViewGroup.LayoutParams.WRAP_CONTENT;
+      setLayoutParams(params);
+    }
+    setVisibility(collapse ? GONE : VISIBLE);
+  }
+
+  private boolean hasHideableMedia() {
+    return (mediaThumbnailStub.resolved() && mediaThumbnailStub.require().getVisibility() == VISIBLE) ||
+           (stickerStub.resolved() && stickerStub.get().getVisibility() == VISIBLE);
   }
 
   @Override

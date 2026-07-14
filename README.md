@@ -51,6 +51,20 @@ message that both copies of this app understand. Some things to know:
 Turning the **"Delete chats for both"** setting off hides the menu option *and* makes your
 app ignore incoming delete-for-both requests from others.
 
+### 4. Hide media when backgrounded
+When the app is sent to the background (home button, recents, screen lock) or you back out
+of a chat, media messages in that chat are hidden — the whole message row collapses and
+disappears, as if it were not there. It stays hidden until you explicitly reveal it with
+**"View media"** in the chat's ⋮ menu.
+
+- Applies to both **sent and received** photos, videos, GIFs, albums, stickers, and
+  big-image link previews. (Voice notes, files, and plain text are unaffected.)
+- Triggers **only** on true app-background or leaving the chat — not when you send media,
+  open the full-screen viewer, or rotate the screen.
+- Hidden state is per-chat and in-memory only (it resets when the app process restarts).
+
+Controlled by the **"Hide media when backgrounded"** setting.
+
 ### Bonus: "Delete all" also retracts remotely
 The existing **"Delete all"** chat option now additionally sends a "delete for everyone"
 for your recent outgoing messages (those still inside Signal's remote-delete window)

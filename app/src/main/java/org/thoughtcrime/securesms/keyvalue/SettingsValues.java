@@ -80,6 +80,7 @@ public final class SettingsValues extends SignalStoreValues {
   public static final  String HIDE_DELETED_MESSAGES                   = "settings.hideDeletedMessages";
   public static final  String HIDE_EXPIRE_TIMER_UPDATES               = "settings.hideExpireTimerUpdates";
   public static final  String CONVERSATION_DELETE_FOR_BOTH            = "settings.conversationDeleteForBoth";
+  public static final  String HIDE_MEDIA_ON_BACKGROUND               = "settings.hideMediaOnBackground";
 
   public static final int BACKUP_DEFAULT_HOUR   = 2;
   public static final int BACKUP_DEFAULT_MINUTE = 0;
@@ -159,7 +160,8 @@ public final class SettingsValues extends SignalStoreValues {
                          SCREEN_LOCK_TIMEOUT,
                          HIDE_DELETED_MESSAGES,
                          HIDE_EXPIRE_TIMER_UPDATES,
-                         CONVERSATION_DELETE_FOR_BOTH);
+                         CONVERSATION_DELETE_FOR_BOTH,
+                         HIDE_MEDIA_ON_BACKGROUND);
   }
 
   public @NonNull LiveData<String> getOnConfigurationSettingChanged() {
@@ -195,6 +197,18 @@ public final class SettingsValues extends SignalStoreValues {
 
   public void setConversationDeleteForBoth(boolean enabled) {
     putBoolean(CONVERSATION_DELETE_FOR_BOTH, enabled);
+  }
+
+  /**
+   * When enabled (default), inline media in the open chat is hidden whenever the app goes to the
+   * background, and stays hidden until the user explicitly reveals it again.
+   */
+  public boolean isHideMediaOnBackgroundEnabled() {
+    return getBoolean(HIDE_MEDIA_ON_BACKGROUND, true);
+  }
+
+  public void setHideMediaOnBackground(boolean enabled) {
+    putBoolean(HIDE_MEDIA_ON_BACKGROUND, enabled);
   }
 
   public boolean isLinkPreviewsEnabled() {

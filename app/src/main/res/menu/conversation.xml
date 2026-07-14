@@ -7,6 +7,10 @@
         android:title="@string/conversation__menu_view_all_media" />
 
     <item
+        android:id="@+id/menu_reveal_media"
+        android:title="@string/conversation__menu_view_media" />
+
+    <item
         android:id="@+id/menu_conversation_settings"
         android:title="@string/conversation__menu_conversation_settings" />
 

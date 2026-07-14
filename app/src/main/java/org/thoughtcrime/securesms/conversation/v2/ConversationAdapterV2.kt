@@ -302,6 +302,20 @@ class ConversationAdapterV2(
     }
   }
 
+  /**
+   * NON-UPSTREAM. When true, inline media in every message is visually hidden until revealed.
+   * Applied per-item at bind time; broadcasting a payload forces a rebind of all visible items.
+   */
+  var isMediaHidden: Boolean = false
+    private set
+
+  fun setMediaHidden(hidden: Boolean) {
+    if (isMediaHidden != hidden) {
+      isMediaHidden = hidden
+      notifyItemRangeChanged(0, itemCount, V2Payload.MEDIA_HIDDEN)
+    }
+  }
+
   fun clearSelection() {
     _selected.clear()
     updateSelected()
@@ -396,6 +410,7 @@ class ConversationAdapterV2(
       }
 
       bindable.setParentScrolling(true)
+      bindable.setMediaHidden(isMediaHidden)
       bindable.bind(
         lifecycleOwner,
         model.conversationMessage,
@@ -426,6 +441,7 @@ class ConversationAdapterV2(
       }
 
       bindable.setParentScrolling(true)
+      bindable.setMediaHidden(isMediaHidden)
       bindable.bind(
         lifecycleOwner,
         model.conversationMessage,

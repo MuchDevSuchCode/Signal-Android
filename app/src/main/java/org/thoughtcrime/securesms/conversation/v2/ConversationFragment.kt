@@ -74,6 +74,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -675,6 +676,7 @@ class ConversationFragment :
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    ProcessLifecycleOwner.get().lifecycle.addObserver(appBackgroundObserver)
     viewModel.resetBackPressedState()
     binding.toolbar.isBackInvokedCallbackEnabled = false
     binding.root.setUseWindowTypes(args.conversationScreenType == ConversationScreenType.NORMAL && !resources.isSplitPane())
@@ -813,6 +815,20 @@ class ConversationFragment :
     recomputeMessageDates(forceUpdate = true)
   }
 
+  /**
+   * NON-UPSTREAM. Hides inline media when the whole app is sent to the background. Uses the process
+   * lifecycle (not the fragment's) so that opening another in-app screen -- the full-screen media
+   * viewer, the media picker while sending -- does NOT count as backgrounding.
+   */
+  private val appBackgroundObserver = object : DefaultLifecycleObserver {
+    override fun onStop(owner: LifecycleOwner) {
+      if (SignalStore.settings.isHideMediaOnBackgroundEnabled && this@ConversationFragment::adapter.isInitialized) {
+        ConversationMediaVisibility.setHidden(args.threadId, true)
+        adapter.setMediaHidden(true)
+      }
+    }
+  }
+
   override fun onResume() {
     super.onResume()
 
@@ -873,6 +889,14 @@ class ConversationFragment :
   }
 
   override fun onDestroyView() {
+    ProcessLifecycleOwner.get().lifecycle.removeObserver(appBackgroundObserver)
+
+    // Mark media hidden when the user genuinely leaves this chat (back to the list), so it is hidden
+    // on re-entry. A config change or navigating to another in-app screen is not "leaving".
+    if (SignalStore.settings.isHideMediaOnBackgroundEnabled && (isRemoving || requireActivity().isFinishing)) {
+      ConversationMediaVisibility.setHidden(args.threadId, true)
+    }
+
     viewModel.collapseAllEvents()
     keyboardEvents?.let {
       container.removeInputListener(it)
@@ -2281,6 +2305,10 @@ class ConversationFragment :
       chatColorsDataProvider = viewModel::chatColorsSnapshot,
       displayDialogFragment = { it.show(childFragmentManager, null) }
     )
+
+    if (SignalStore.settings.isHideMediaOnBackgroundEnabled && ConversationMediaVisibility.isHidden(args.threadId)) {
+      adapter.setMediaHidden(true)
+    }
 
     typingIndicatorAdapter = ConversationTypingIndicatorAdapter(Glide.with(this))
 
@@ -4356,6 +4384,13 @@ class ConversationFragment :
 
     override fun handleViewMedia() {
       startActivity(MediaOverviewActivity.forThread(requireContext(), args.threadId))
+    }
+
+    override fun handleRevealMedia() {
+      ConversationMediaVisibility.setHidden(args.threadId, false)
+      if (this@ConversationFragment::adapter.isInitialized) {
+        adapter.setMediaHidden(false)
+      }
     }
 
     override fun handleAddShortcut() {

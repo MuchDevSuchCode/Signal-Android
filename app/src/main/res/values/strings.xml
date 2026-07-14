@@ -4283,6 +4283,9 @@
     <!-- Privacy toggle: fully remove messages deleted for everyone instead of showing a tombstone -->
     <string name="preferences__hide_deleted_messages">Hide deleted messages</string>
     <string name="preferences__hide_deleted_messages_summary">When a message is deleted for everyone, remove it completely instead of showing \"This message was deleted.\"</string>
+    <!-- Privacy toggle: hide inline chat media when the app goes to the background -->
+    <string name="preferences__hide_media_on_background">Hide media when backgrounded</string>
+    <string name="preferences__hide_media_on_background_summary">When the app leaves the foreground, media messages (photos, videos, GIFs, stickers) in the open chat disappear entirely. Reveal them again with \"View media\" in the chat menu.</string>
     <!-- Privacy toggle: allow deleting an entire 1:1 chat from both parties' devices -->
     <string name="preferences__delete_chat_for_both">Delete chats for both</string>
     <string name="preferences__delete_chat_for_both_summary">Allow you and the other person to delete an entire chat from both of your devices. Turning this off hides the option and ignores such requests from others.</string>
@@ -4725,6 +4728,8 @@
     <string name="conversation__menu_add_shortcut">Add to home screen</string>
     <string name="conversation__menu_export" translatable="false">Export (Labs)</string>
     <string name="conversation__menu_create_bubble">Create bubble</string>
+    <!-- Overflow menu option that reveals inline media hidden by the "hide media when backgrounded" feature -->
+    <string name="conversation__menu_view_media">View media</string>
     <!-- Overflow menu option that deletes the entire chat and returns to the chat list -->
     <string name="conversation__menu_delete_all">Delete all</string>
     <!-- Overflow menu option that deletes the entire chat from both your device and the other party's -->

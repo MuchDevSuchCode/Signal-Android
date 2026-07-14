@@ -179,6 +179,15 @@ class PrivacySettingsFragment : DSLSettingsFragment(R.string.preferences__privac
         }
       )
 
+      switchPref(
+        title = DSLSettingsText.from(R.string.preferences__hide_media_on_background),
+        summary = DSLSettingsText.from(R.string.preferences__hide_media_on_background_summary),
+        isChecked = state.hideMediaOnBackground,
+        onClick = {
+          viewModel.setHideMediaOnBackground(!state.hideMediaOnBackground)
+        }
+      )
+
       dividerPref()
 
       sectionHeaderPref(R.string.PrivacySettingsFragment__disappearing_messages)

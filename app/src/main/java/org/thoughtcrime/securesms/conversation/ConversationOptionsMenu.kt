@@ -185,6 +185,10 @@ internal object ConversationOptionsMenu {
         hideMenuItem(menu, R.id.menu_delete_chat_for_both)
       }
 
+      if (!SignalStore.settings.isHideMediaOnBackgroundEnabled) {
+        hideMenuItem(menu, R.id.menu_reveal_media)
+      }
+
       if (isActiveV2Group) {
         hideMenuItem(menu, R.id.menu_mute_notifications)
         hideMenuItem(menu, R.id.menu_conversation_settings)
@@ -222,6 +226,7 @@ internal object ConversationOptionsMenu {
         R.id.menu_call_secure -> callback.handleDial()
         R.id.menu_video_secure -> callback.handleVideo()
         R.id.menu_view_media -> callback.handleViewMedia()
+        R.id.menu_reveal_media -> callback.handleRevealMedia()
         R.id.menu_add_shortcut -> callback.handleAddShortcut()
         R.id.menu_search -> callback.handleSearch()
         R.id.menu_add_to_contacts -> callback.handleAddToContacts()
@@ -293,6 +298,7 @@ internal object ConversationOptionsMenu {
     fun handleVideo()
     fun handleDial()
     fun handleViewMedia()
+    fun handleRevealMedia()
     fun handleAddShortcut()
     fun handleSearch()
     fun handleAddToContacts()

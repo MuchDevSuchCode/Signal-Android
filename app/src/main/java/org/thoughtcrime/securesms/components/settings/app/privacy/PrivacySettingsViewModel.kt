@@ -77,6 +77,11 @@ class PrivacySettingsViewModel(
     refresh()
   }
 
+  fun setHideMediaOnBackground(enabled: Boolean) {
+    SignalStore.settings.setHideMediaOnBackground(enabled)
+    refresh()
+  }
+
   fun refresh() {
     store.update(this::updateState)
   }
@@ -97,7 +102,8 @@ class PrivacySettingsViewModel(
       universalExpireTimer = SignalStore.settings.universalExpireTimer,
       hideDeletedMessages = SignalStore.settings.isHideDeletedMessagesEnabled,
       hideExpireTimerUpdates = SignalStore.settings.isHideExpireTimerUpdatesEnabled,
-      conversationDeleteForBoth = SignalStore.settings.isConversationDeleteForBothEnabled
+      conversationDeleteForBoth = SignalStore.settings.isConversationDeleteForBothEnabled,
+      hideMediaOnBackground = SignalStore.settings.isHideMediaOnBackgroundEnabled
     )
   }
 

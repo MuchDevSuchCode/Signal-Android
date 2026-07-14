@@ -81,6 +81,11 @@ public interface BindableConversationItem extends Unbindable, GiphyMp4Playable, 
     // Intentionally Blank.
   }
 
+  /** NON-UPSTREAM. When true, inline media on this item is visually hidden until explicitly revealed. */
+  default void setMediaHidden(boolean mediaHidden) {
+    // Intentionally Blank.
+  }
+
   interface EventListener {
     void onQuoteClicked(MmsMessageRecord messageRecord);
     void onLinkPreviewClicked(@NonNull LinkPreview linkPreview);

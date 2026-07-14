@@ -15,5 +15,6 @@ data class PrivacySettingsState(
   val universalExpireTimer: Int,
   val hideDeletedMessages: Boolean,
   val hideExpireTimerUpdates: Boolean,
-  val conversationDeleteForBoth: Boolean
+  val conversationDeleteForBoth: Boolean,
+  val hideMediaOnBackground: Boolean
 )
